@@ -1,0 +1,29 @@
+﻿@model Category
+
+<form asp-action="DeleteCategory" method="post">
+    <div class="p-3 mt-4 border-black">
+        <div class="row pb-2">
+            <h2 class="text-primary"> Are you sure want to delete following Category ? </h2>
+            <hr />
+        </div>
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3 row">
+            <label asp-for="Name" class="p-0 col-6"></label>
+            <input type="text" asp-for="Name" class="col-6 form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="DisplayOrder" class="p-0 col-6"></label>
+            <input type="number" asp-for="DisplayOrder" class="col-6 form-control" readonly />
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <button type="submit" class="btn btn-danger form-control">Delete</button>
+            </div>
+            <div class="col-6">
+                <a asp-controller="Category" asp-action="Index" class="btn btn-secondary form-control">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </div>
+</form>

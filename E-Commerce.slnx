@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="E-Commerce-Category-Razor-Pages/BooksWeb-Category-Razor-Pages.csproj" Id="6302f038-a549-4ae3-8467-ebad94baddc2" />
+  <Project Path="E-Commerce.DataAccess/BooksWeb.DataAccess.csproj" Id="149965d9-aadf-4ddd-ae7d-51687ae847bc" />
+  <Project Path="E-Commerce.Models/BooksWeb.Models.csproj" Id="b7811d17-f9a7-4a22-9726-563e66423b37" />
+  <Project Path="E-Commerce.Utility/BooksWeb.Utilities.csproj" Id="d28d1e3b-66d9-4d56-b12c-de4357e3e983" />
+  <Project Path="E-Commerce/BooksWeb.csproj" />
+</Solution>

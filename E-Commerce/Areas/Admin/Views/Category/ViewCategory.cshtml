@@ -1,0 +1,26 @@
+﻿@model Category
+
+<form asp-area="Admin" asp-action="UpdateCategory" method="post">
+    <div class="p-3 mt-4 border-black">
+        <div class="row pb-2">
+            <h2 class="text-primary"> View Category</h2>
+            <hr />
+        </div>
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3 row">
+            <label asp-for="Name" class="p-0"></label>
+            <input type="text" asp-for="Name" class="form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="DisplayOrder" class="p-0"></label>
+            <input type="number" asp-for="DisplayOrder" class="form-control" readonly />
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <a asp-area="Admin" asp-controller="Category" asp-action="Index" class="btn btn-secondary form-control">
+                    Back to Category List
+                </a>
+            </div>
+        </div>
+    </div>
+</form>

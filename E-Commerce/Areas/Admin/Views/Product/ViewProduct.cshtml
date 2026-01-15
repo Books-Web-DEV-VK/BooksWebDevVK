@@ -1,0 +1,50 @@
+﻿@model Product
+
+<form asp-area="Admin" asp-action="UpdateProduct" method="post">
+    <div class="p-3 mt-4 border-black">
+        <div class="row pb-2">
+            <h2 class="text-primary"> View Product</h2>
+            <hr />
+        </div>
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3 row">
+            <label asp-for="Title" class="p-0"></label>
+            <input type="text" asp-for="Title" class="form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Description" class="p-0"></label>
+            <input type="text" asp-for="Description" class="form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="ISBN" class="p-0"></label>
+            <input type="text" asp-for="ISBN" class="form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Author" class="p-0"></label>
+            <input type="text" asp-for="Author" class="form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="ListPrice" class="p-0"></label>
+            <input type="number" asp-for="ListPrice" class="form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Price" class="p-0"></label>
+            <input type="number" asp-for="Price" class="form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Price50" class="p-0"></label>
+            <input type="number" asp-for="Price50" class="form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Price100" class="p-0"></label>
+            <input type="number" asp-for="Price100" class="form-control" readonly />
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="btn btn-secondary form-control">
+                    Back to Product List
+                </a>
+            </div>
+        </div>
+    </div>
+</form>

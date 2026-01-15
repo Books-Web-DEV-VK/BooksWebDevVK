@@ -1,0 +1,46 @@
+﻿@model Category
+@{
+    bool hasModelLevelErrors = ViewData.ModelState[string.Empty]?.Errors.Count > 0;
+}
+<form asp-action="UpdateCategory" method="post">
+    <div class="p-3 mt-4 border-black">
+        <div class="row pb-2">
+            <h2 class="text-primary"> Edit Category</h2>
+            <hr />
+        </div>
+        @if (hasModelLevelErrors)
+        {
+            <div class="alert alert-danger" role="alert">
+                <div asp-validation-summary="ModelOnly"></div>
+                <!-- asp-validation-summary=All , both the field level errors and the model leve;errors -->
+                <!-- asp-validation-summary=ModelOnly , Only model level errors -->
+                <!-- asp-validation-summary=None , Nothing will be visible -->
+            </div>
+        }
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3 row">
+            <label asp-for="Name" class="p-0"></label>
+            <input type="text" asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="DisplayOrder" class="p-0"></label>
+            <input type="number" asp-for="DisplayOrder" class="form-control" />
+            <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <button type="submit" class="btn btn-primary form-control">Edit</button>
+            </div>
+            <div class="col-6">
+                <a asp-controller="Category" asp-action="Index" class="btn btn-secondary form-control">
+                    Back to Category List
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

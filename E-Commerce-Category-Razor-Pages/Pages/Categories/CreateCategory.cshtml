@@ -1,0 +1,46 @@
+﻿@page
+@model BooksWeb_Category_Razor_Pages.Pages.Categories.CreateCategoryModel
+@{
+    bool hasModelLevelErrors = ViewData.ModelState[string.Empty]?.Errors.Count > 0;
+}
+
+<form method="post">
+    <div class="p-3 mt-4 border-black">
+        <div class="row pb-2">
+            <h2 class="text-primary"> Create Category</h2>
+            <hr />
+        </div>
+        @if(hasModelLevelErrors){
+            <div class="alert alert-danger" role="alert">
+                <div asp-validation-summary="ModelOnly"></div>  
+                <!-- asp-validation-summary=All , both the field level errors and the model leve;errors -->
+                <!-- asp-validation-summary=ModelOnly , Only model level errors -->
+                <!-- asp-validation-summary=None , Nothing will be visible -->
+            </div>
+        }
+        <div class="mb-3 row">
+            <label asp-for="category.Name" class="p-0"></label>
+            <input type="text" asp-for="category.Name" class="form-control" />
+            <span asp-validation-for="category.Name" class="text-danger"></span>
+        </div>  
+        <div class="mb-3 row">
+            <label asp-for="category.DisplayOrder" class="p-0"></label>
+            <input type="text" asp-for="category.DisplayOrder" class="form-control" />
+            <span asp-validation-for="category.DisplayOrder" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <button type="submit" class="btn btn-primary form-control">Create</button>
+            </div>
+            <div class="col-6">
+                <a asp-page="/Categories/Index" class="btn btn-secondary form-control">
+                    Back to Category List
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

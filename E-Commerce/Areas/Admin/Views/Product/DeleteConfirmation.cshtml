@@ -1,0 +1,53 @@
+﻿@model Product
+
+<form asp-area="Admin" asp-action="DeleteProduct" method="post">
+    <div class="p-3 mt-4 border-black">
+        <div class="row pb-2">
+            <h2 class="text-primary"> Are you sure want to delete following Product ? </h2>
+            <hr />
+        </div>
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3 row">
+            <label asp-for="Title" class="p-0 col-6"></label>
+            <input type="text" asp-for="Title" class="col-6 form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Description" class="p-0 col-6"></label>
+            <input type="text" asp-for="Description" class="col-6 form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="ISBN" class="p-0 col-6"></label>
+            <input type="text" asp-for="ISBN" class="col-6 form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Author" class="p-0 col-6"></label>
+            <input type="text" asp-for="Author" class="col-6 form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="ListPrice" class="p-0 col-6"></label>
+            <input type="number" asp-for="ListPrice" class="col-6 form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Price" class="p-0 col-6"></label>
+            <input type="number" asp-for="Price" class="col-6 form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Price50" class="p-0 col-6"></label>
+            <input type="number" asp-for="Price50" class="col-6 form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Price100" class="p-0 col-6"></label>
+            <input type="number" asp-for="Price100" class="col-6 form-control" readonly />
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <button type="submit" class="btn btn-danger form-control">Delete</button>
+            </div>
+            <div class="col-6">
+                <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="btn btn-secondary form-control">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
