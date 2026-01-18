@@ -1,4 +1,4 @@
-﻿@model Product
+﻿@model ProductVM
 
 <form asp-area="Admin" asp-action="DeleteProduct" method="post">
     <div class="p-3 mt-4 border-black">
@@ -6,38 +6,52 @@
             <h2 class="text-primary"> Are you sure want to delete following Product ? </h2>
             <hr />
         </div>
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Product.Id" />
         <div class="mb-3 row">
-            <label asp-for="Title" class="p-0 col-6"></label>
-            <input type="text" asp-for="Title" class="col-6 form-control" readonly />
+            <label asp-for="Product.Title" class="p-0 col-6"></label>
+            <input type="text" asp-for="Product.Title" class="col-6 form-control" readonly />
         </div>
         <div class="mb-3 row">
-            <label asp-for="Description" class="p-0 col-6"></label>
-            <input type="text" asp-for="Description" class="col-6 form-control" readonly />
+            <label asp-for="Product.Description" class="p-0 col-6"></label>
+            <input type="text" asp-for="Product.Description" class="col-6 form-control" readonly />
         </div>
         <div class="mb-3 row">
-            <label asp-for="ISBN" class="p-0 col-6"></label>
-            <input type="text" asp-for="ISBN" class="col-6 form-control" readonly />
+            <label asp-for="Product.ISBN" class="p-0 col-6"></label>
+            <input type="text" asp-for="Product.ISBN" class="col-6 form-control" readonly />
         </div>
         <div class="mb-3 row">
-            <label asp-for="Author" class="p-0 col-6"></label>
-            <input type="text" asp-for="Author" class="col-6 form-control" readonly />
+            <label asp-for="Product.Author" class="p-0 col-6"></label>
+            <input type="text" asp-for="Product.Author" class="col-6 form-control" readonly />
         </div>
         <div class="mb-3 row">
-            <label asp-for="ListPrice" class="p-0 col-6"></label>
-            <input type="number" asp-for="ListPrice" class="col-6 form-control" readonly />
+            <label asp-for="Product.ListPrice" class="p-0 col-6"></label>
+            <input type="number" asp-for="Product.ListPrice" class="col-6 form-control" readonly />
         </div>
         <div class="mb-3 row">
-            <label asp-for="Price" class="p-0 col-6"></label>
-            <input type="number" asp-for="Price" class="col-6 form-control" readonly />
+            <label asp-for="Product.Price" class="p-0 col-6"></label>
+            <input type="number" asp-for="Product.Price" class="col-6 form-control" readonly />
         </div>
         <div class="mb-3 row">
-            <label asp-for="Price50" class="p-0 col-6"></label>
-            <input type="number" asp-for="Price50" class="col-6 form-control" readonly />
+            <label asp-for="Product.Price50" class="p-0 col-6"></label>
+            <input type="number" asp-for="Product.Price50" class="col-6 form-control" readonly />
         </div>
         <div class="mb-3 row">
-            <label asp-for="Price100" class="p-0 col-6"></label>
-            <input type="number" asp-for="Price100" class="col-6 form-control" readonly />
+            <label asp-for="Product.Price100" class="p-0 col-6"></label>
+            <input type="number" asp-for="Product.Price100" class="col-6 form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.ImageUrl" class="p-0"></label>
+            <input type="number" asp-for="Product.ImageUrl" class="col-6 form-control" readonly />
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.CategoryId" class="p-0"></label>
+            <select asp-for="Product.CategoryId" class="col-6 form-select" readonly>
+                <option disabled selected value="">-- Select Category --</option>
+                @foreach (var category in Model.CategoryList)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
         </div>
         <div class="row">
             <div class="col-6">

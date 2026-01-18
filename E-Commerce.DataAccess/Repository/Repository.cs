@@ -12,12 +12,13 @@ namespace BooksWeb.DataAccess.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _appDb;
+        private readonly ApplicationDbContext _appDbCxt;
         private readonly DbSet<T> _dbSet;
 
-        public Repository(ApplicationDbContext appDb) {
-            _appDb = appDb;
-            _dbSet = _appDb.Set<T>();
+        public Repository(ApplicationDbContext appDbCxt) {
+            _appDbCxt = appDbCxt;
+            _dbSet = _appDbCxt.Set<T>();
+            _appDbCxt.Products.Include(u => u.Category);
         }
 
         public void Add(T entity)
@@ -25,18 +26,33 @@ namespace BooksWeb.DataAccess.Repository
             _dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> filter)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
             IQueryable<T> query = _dbSet;
             query = query.Where(filter);
+            if(!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach(var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
             return query.FirstOrDefault<T>();
         }
 
-        IEnumerable<T> IRepository<T>.GetAll()
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
             IQueryable<T> query = _dbSet;
+            if(!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach(var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
             return query.ToList();
         }
+
 
         public void Remove(T entity)
         {

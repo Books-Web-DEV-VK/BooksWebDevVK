@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace BooksWeb.Models
         [Required]
         public string Title { get; set; } = string.Empty;
 
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
 
         [Required]
         public string ISBN { get; set; } = string.Empty;
@@ -43,10 +44,12 @@ namespace BooksWeb.Models
         [Display(Name = "Price for 100+")]
         public double Price100 { get; set; }
 
-        public Guid CategoryId { get; set; }
+        public string? ImageUrl { get; set; }
+
+        public Guid? CategoryId { get; set; }
 
         // Navigation Properties
         [ForeignKey("CategoryId")]
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
     }
 }

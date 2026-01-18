@@ -61,6 +61,7 @@ namespace BooksWeb.Migrations.Data
                     Price = 90,
                     Price50 = 85,
                     Price100 = 80,
+                    ImageUrl = "https://picsum.photos/500/700?random=1",
                     CategoryId = Guid.Parse("60592bbc-bc78-4b61-bfb0-925b3a930c23")
                 },
                 new Product
@@ -74,6 +75,7 @@ namespace BooksWeb.Migrations.Data
                     Price = 30,
                     Price50 = 25,
                     Price100 = 20,
+                    ImageUrl = "https://picsum.photos/500/700?random=2",
                     CategoryId = Guid.Parse("60592bbc-bc78-4b61-bfb0-925b3a930c23")
                 },
                 new Product
@@ -86,7 +88,8 @@ namespace BooksWeb.Migrations.Data
                     ListPrice = 55,
                     Price = 50,
                     Price50 = 40,
-                    Price100 = 35, 
+                    Price100 = 35,
+                    ImageUrl = "https://picsum.photos/500/700?random=3",
                     CategoryId = Guid.Parse("ca7b4215-d1ac-4091-a194-2ffee85ed84f")
                 },
                 new Product
@@ -99,7 +102,8 @@ namespace BooksWeb.Migrations.Data
                     ListPrice = 70,
                     Price = 65,
                     Price50 = 60,
-                    Price100 = 55, 
+                    Price100 = 55,
+                    ImageUrl = "https://picsum.photos/500/700?random=4",
                     CategoryId = Guid.Parse("8f1a3b4c-5d6e-4f7a-8b9c-0d1e2f3a4b5c")
                 },
                 new Product
@@ -113,6 +117,7 @@ namespace BooksWeb.Migrations.Data
                     Price = 27,
                     Price50 = 25,
                     Price100 = 20,
+                    ImageUrl = "https://picsum.photos/500/700?random=5",
                     CategoryId = Guid.Parse("9a2b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d")
                 }
             );  

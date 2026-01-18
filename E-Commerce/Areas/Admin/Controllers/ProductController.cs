@@ -1,9 +1,13 @@
 ﻿using BooksWeb.DataAccess.Repository.IRepository;
 using BooksWeb.Models;
+using BooksWeb.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NuGet.Protocol.Resources;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace BooksWeb.Areas.Admin.Controllers
 {
@@ -11,142 +15,163 @@ namespace BooksWeb.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public ProductController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnv;
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnv)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnv = webHostEnv;
         }
 
         public IActionResult Index()
         {
-            List<Product> products = _unitOfWork._productRepo.GetAll().ToList();
+            List<Product> products = _unitOfWork._productRepo.GetAll("Category").ToList();
             return View(products);
         }
 
-        public IActionResult CreateProduct()
+        [HttpGet]
+        public IActionResult GetAllInJSON()
         {
-            return View(); // nothing is passed to the view CreateProduct.cshtml - empty Product model eill be created and set to view
-        }
-
-        [HttpPost]
-        public IActionResult CreateProduct(Product newProduct)
-        {
-            try
-            {
-                checkAndSetModelErrors(newProduct);
-                if (newProduct.ISBN.Length > 5)
-                {
-                    ModelState.AddModelError("", "ISBN Should atleast have 5 characters."); // Model level error 
-                }
-                if (ModelState.IsValid)
-                {
-                    _unitOfWork._productRepo.Add(newProduct);
-                    _unitOfWork.Save();
-                    TempData["success"] = "Successfully created the product !!";
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    return View("CreateProduct", newProduct);
-                }
-            }
-            catch(Exception ex)
-            {
-                TempData["error"] = "Error occured while creating the product !! Try again after sometime.";
-                return RedirectToAction("Index");
-            }
+            List<Product> products = _unitOfWork._productRepo.GetAll("Category").ToList();
+            return Json(new { data = products });
         }
 
         [HttpGet]
-        public IActionResult ViewProduct(Guid id, string actionType = "get")
+        [Route("Admin/Product/{action}/{actiontype}/{id?}")]  // Here action is like keyword for MVC to identify the method to be called
+        public IActionResult Details(string actiontype, Guid? id)
         {
-            Product? product = _unitOfWork._productRepo.Get(u => u.Id == id);
-            if (product == null)
+            List<Category> categoryList = _unitOfWork._categoryRepo.GetAll().ToList();
+            actiontype = actiontype.ToLower();
+            if (actiontype == "create")
             {
-                return NotFound();
+                ViewBag.ActionType = "create";
+                return View("ProductDetails", new ProductVM()
+                {
+                    Product = new Product(),
+                    CategoryList = categoryList
+                });
             }
-            if (actionType.ToLower() == "get")
-                return View("ViewProduct", product);
-            else if (actionType.ToLower() == "edit")
-                return View("EditProduct", product);
-            else if (actionType.ToLower() == "delete")
-                return View("DeleteConfirmation", product);
+            if (actiontype == "view" || actiontype == "edit")
+            {
+                if (id == null)
+                {
+                    TempData["error"] = "Invalid Url Accessed, Returning to List Page!!";
+                    return RedirectToAction("Index");
+                }
+                Product? product = _unitOfWork._productRepo.Get(u => u.Id == id);
+                ViewBag.ActionType = actiontype;
+                if (product == null)
+                {
+                    TempData["error"] = "Product not found !!";
+                    return RedirectToAction("Index");
+                }
+                return View("ProductDetails", new ProductVM()
+                {
+                    Product = product,
+                    CategoryList = categoryList
+                });
+            }
             else
-                return View("Error");
+            {
+                TempData["error"] = "Invalid Url Accessed, Returning to List Page!!";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
-        public IActionResult UpdateProduct(Product updatableProduct)
-        {
+        public IActionResult ManageProducts(ProductVM productVM, string actionType, IFormFile? file)
+       {
             try
             {
-                checkAndSetModelErrors(updatableProduct);
-                if (updatableProduct.ISBN.Length > 5)
+                List<Category> categoryList = _unitOfWork._categoryRepo.GetAll().ToList();
+                checkAndSetModelErrors(productVM.Product);
+                if (productVM.Product.ISBN.Length > 5)
                 {
                     ModelState.AddModelError("", "ISBN Should atleast have 5 characters."); // Model level error 
                 }
-                if (ModelState.IsValid)
+                if (ModelState.IsValid) 
                 {
-                    TempData["success"] = "Successfully updated the product !!";
-                    _unitOfWork._productRepo.Update(updatableProduct);
-                    _unitOfWork.Save();
+                    switch (actionType.ToLower())
+                    {
+                        case "create":
+                            productVM.Product.ImageUrl = createImage(file);
+                            _unitOfWork._productRepo.Add(productVM.Product);
+                            _unitOfWork.Save();
+                            TempData["success"] = "Successfully created the product !!";
+                            break;
+                        case "edit":
+                            if (!string.IsNullOrEmpty(productVM.Product?.ImageUrl))
+                            {
+                                string oldImageUrl = Path.Combine(_webHostEnv.WebRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
+                                if (System.IO.File.Exists(oldImageUrl))
+                                {
+                                    System.IO.File.Delete(oldImageUrl);
+                                }
+                            }
+                            productVM.Product.ImageUrl = createImage(file);
+                            _unitOfWork._productRepo.Update(productVM.Product);
+                            _unitOfWork.Save();
+                            TempData["success"] = "Successfully updated the product !!";
+                            break;
+                        default:
+                            TempData["error"] = "Invalid Action Type !!";
+                            return RedirectToAction("Index");
+                    }
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    return View("EditProduct", updatableProduct);
+                    ViewBag.ActionType = actionType.ToLower();
+                    productVM.CategoryList = categoryList;
+                    return View("ProductDetails", productVM);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                TempData["error"] = "Error occured while updating the product !! Try again after sometime.";
+                TempData["error"] = "Error occured while processing the request !! Try again after sometime.";
                 return RedirectToAction("Index");
             }
         }
 
-        [HttpPost]
-        public IActionResult DeleteProduct(Product removableProduct)
+        [HttpDelete]
+        public IActionResult Delete(Guid id)
         {
-            try
+            var removableProduct = _unitOfWork._productRepo.Get(p=>p.Id==id);
+            if (removableProduct == null)
+                return NotFound("Product Not Found !!");
+            else
             {
-                if (ModelState.IsValid)
+                if (!string.IsNullOrEmpty(removableProduct?.ImageUrl))
                 {
-                    TempData["success"] = "Successfully deleted the product !!";
-                    _unitOfWork._productRepo.Remove(removableProduct);
-                    _unitOfWork.Save();
-                    return RedirectToAction("Index");
+                    string oldImageUrl = Path.Combine(_webHostEnv.WebRootPath, removableProduct.ImageUrl.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldImageUrl))
+                    {
+                        System.IO.File.Delete(oldImageUrl);
+                    }
                 }
-                else
-                {
-                    TempData["errorr"] = "Error occured while deleting the product !! Try again after sometime.";
-                    return RedirectToAction("Index");
-                }
-            }
-            catch(Exception ex)
-            {
-                TempData["errorr"] = "Error occured while deleting the product !! Try again after sometime.";
-                return RedirectToAction("Index");
+                _unitOfWork._productRepo.Remove(removableProduct);
+                _unitOfWork.Save();
+                return Ok("Delete Successfully !!");
             }
         }
 
         private void checkAndSetModelErrors(Product product)
         {
             var properties = product.GetType().GetProperties();
-            Console.WriteLine("Total Properties : ", properties);
 
             for (int i = 0; i < properties.Length; i++)
             {
                 var value = properties[i].GetValue(product);
-                Console.WriteLine("Property Name : " + properties[i].Name + " Value : " + value + " ---- " + value?.ToString());
+                if (properties[i].Name == "Category") // No point od checking the Navigation Properties
+                {
+                    continue;
+                }
                 bool isRequiredProperty = Attribute.IsDefined(properties[i], typeof(RequiredAttribute));
                 if (isRequiredProperty && (value is null || String.IsNullOrWhiteSpace(value.ToString())))
                 {
-                    Console.WriteLine("Adding model error for property : " + properties[i].Name);
                     ModelState.AddModelError(properties[i].Name, $"{properties[i].Name} is required");
                 }
                 else if (value is not null && hasInvalidCharacters(value.ToString()))
                 {
-                    Console.WriteLine("Adding model error for property : " + properties[i].Name);
                     ModelState.AddModelError("", $"{properties[i].Name} contains invalid characters");
                 }
             }
@@ -154,13 +179,27 @@ namespace BooksWeb.Areas.Admin.Controllers
 
         private bool hasInvalidCharacters(string str)
         {
-            Char[] invalidCharactersSet = new Char[] { '<', '>', '\'', '=' };
+            Char[] invalidCharactersSet = new Char[] { '<', '>' };
             foreach (char c in invalidCharactersSet)
             {
                 if (str.Contains(c))
                     return true;
             }
             return false;
+        }
+
+        private string? createImage(IFormFile? file)
+        {
+            if (file == null)
+                return null;
+            string fileName = DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss-fff") + Path.GetExtension(file.FileName);
+            string wwwRootPath = _webHostEnv.WebRootPath;
+            string productImagesPath = Path.Combine(wwwRootPath, @"images\products");
+            using (var fileStream = new FileStream(Path.Combine(productImagesPath, fileName), FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+            return @"\images\products\" + fileName;
         }
     }
 }

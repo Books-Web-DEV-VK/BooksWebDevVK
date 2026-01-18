@@ -83,15 +83,17 @@ namespace BooksWeb.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid?>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ISBN")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("ListPrice")
@@ -124,6 +126,7 @@ namespace BooksWeb.DataAccess.Migrations
                             CategoryId = new Guid("60592bbc-bc78-4b61-bfb0-925b3a930c23"),
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.",
                             ISBN = "SWD9999001",
+                            ImageUrl = "https://picsum.photos/500/700?random=1",
                             ListPrice = 99.0,
                             Price = 90.0,
                             Price100 = 80.0,
@@ -137,6 +140,7 @@ namespace BooksWeb.DataAccess.Migrations
                             CategoryId = new Guid("60592bbc-bc78-4b61-bfb0-925b3a930c23"),
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.",
                             ISBN = "CAW7777001",
+                            ImageUrl = "https://picsum.photos/500/700?random=2",
                             ListPrice = 40.0,
                             Price = 30.0,
                             Price100 = 20.0,
@@ -150,6 +154,7 @@ namespace BooksWeb.DataAccess.Migrations
                             CategoryId = new Guid("ca7b4215-d1ac-4091-a194-2ffee85ed84f"),
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.",
                             ISBN = "RITO5555001",
+                            ImageUrl = "https://picsum.photos/500/700?random=3",
                             ListPrice = 55.0,
                             Price = 50.0,
                             Price100 = 35.0,
@@ -163,6 +168,7 @@ namespace BooksWeb.DataAccess.Migrations
                             CategoryId = new Guid("8f1a3b4c-5d6e-4f7a-8b9c-0d1e2f3a4b5c"),
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.",
                             ISBN = "WS3333001",
+                            ImageUrl = "https://picsum.photos/500/700?random=4",
                             ListPrice = 70.0,
                             Price = 65.0,
                             Price100 = 55.0,
@@ -176,6 +182,7 @@ namespace BooksWeb.DataAccess.Migrations
                             CategoryId = new Guid("9a2b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d"),
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.",
                             ISBN = "SOTJ1111001",
+                            ImageUrl = "https://picsum.photos/500/700?random=5",
                             ListPrice = 30.0,
                             Price = 27.0,
                             Price100 = 20.0,
@@ -188,9 +195,7 @@ namespace BooksWeb.DataAccess.Migrations
                 {
                     b.HasOne("BooksWeb.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
                 });

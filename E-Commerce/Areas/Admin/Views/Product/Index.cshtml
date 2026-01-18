@@ -8,44 +8,46 @@
             </h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="Product" asp-action="CreateProduct" class="btn btn-primary">
+            <a asp-controller="Product" asp-action="Details" asp-route-actionType="create" class="btn btn-primary">
                 <i class="bi bi-plus-circle"></i>
                 Create New Product
             </a>
         </div> 
     </div>
 </div>
-<table class="table table-striped table-bordered">
+<table id="product-table" class="table table-striped table-bordered">
     <thead class="table-dark">
         <tr>
             <th>Title</th>
             <th>ISBN</th>
             <th>Author</th>
             <th>List Price</th>
-            <th>Actions</th>
+            <th>Category</th>
+            <th>Actions</th> 
         </tr>
     </thead>
-    <tbody>
-        @foreach (var product in Model.OrderBy(product=>product.Title))
+    @*<tbody>
+         @foreach (var product in Model.OrderBy(product=>product.Title))
         {
             <tr>
                 <td>@product.Title</td>
                 <td>@product.ISBN</td>
                 <td>@product.Author</td>
                 <td>@product.ListPrice</td>
+                <td>@product.Category?.Name</td>
                 <td>
-                    <a asp-controller="Product" asp-action="ViewProduct" asp-route-id="@product.Id" asp-route-actionType="edit" class="btn btn-info mx-2 rounded-2">
+                    <a asp-area="Admin" asp-controller="Product" asp-action="Details" asp-route-actionType="edit" asp-route-id="@product.Id" class="btn btn-info mx-2 rounded-2">
                         <i class="bi bi-pencil-square"></i>
                         Edit Product
                     </a>
-                    <a asp-controller="Product" asp-action="ViewProduct" asp-route-id="@product.Id" asp-route-actionType="delete" class="btn btn-danger mx-2 rounded-2">
+                    <a asp-area="Admin" asp-controller="Product" asp-action="Details" asp-route-actionType="delete" asp-route-id="@product.Id" class="btn btn-danger mx-2 rounded-2">
                         <i class="bi bi-trash-fill"></i>
                         Delete Product
                     </a>
                 </td>
             </tr>
-        }
-    </tbody>
+        } 
+    </tbody>*@
 </table>
 
 @section Scripts {

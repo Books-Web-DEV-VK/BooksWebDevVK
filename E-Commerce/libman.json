@@ -17,6 +17,16 @@
     {
       "library": "toastr.js@2.1.4",
       "destination": "wwwroot/lib/toastr.js/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "datatables@1.10.21",
+      "destination": "wwwroot/lib/datatables/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "datatables.net@2.3.4",
+      "destination": "wwwroot/lib/datatables.net/"
     }
-  ]
+]
 }

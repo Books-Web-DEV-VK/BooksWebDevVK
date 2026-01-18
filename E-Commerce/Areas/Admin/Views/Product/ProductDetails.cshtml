@@ -1,0 +1,165 @@
+﻿@using Microsoft.AspNetCore.Mvc;
+@model ProductVM
+@{
+    bool hasModelLevelErrors = ViewData.ModelState[string.Empty]?.Errors.Count > 0;
+    Model.CategoryList = Model.CategoryList ?? new List<Category>();
+    string actionType = ViewBag.ActionType?.ToString().ToLower() ?? "view";
+    string cancelAction = actionType == "view" ? "Back to Category List" : "Cancel";
+    var isReadOnly = (actionType == "view").ToString().ToLower();
+    var isImagePreviewRequired = (actionType != "create" && !string.IsNullOrWhiteSpace(Model?.Product?.ImageUrl)).ToString().ToLower();
+
+    string heading = actionType switch 
+    {
+        "create" => "Enter new product details",
+        "edit" => "Edit Product Details",
+        _ => "Product Details"
+    };
+}
+
+@actionType
+@cancelAction
+@isReadOnly
+@Model?.Product.Id
+@isImagePreviewRequired
+@Model.Product.ImageUrl==null
+
+
+<form asp-area="Admin" asp-controller="Product" asp-action='ManageProducts' asp-route-actionType="@actionType" method="post" enctype="multipart/form-data">
+    <div class="p-3 mt-4 border-black">
+        <div class="row pb-2">
+            <h2 class="text-primary"> @heading.ToUpper() </h2>
+            <hr />
+        </div>
+        @if (hasModelLevelErrors)
+        {
+            <div class="alert alert-danger" role="alert">
+                <div asp-validation-summary="ModelOnly"></div>
+                <!-- asp-validation-summary=All , both the field level errors and the model leve;errors -->
+                <!-- asp-validation-summary=ModelOnly , Only model level errors -->
+                <!-- asp-validation-summary=None , Nothing will be visible -->
+            </div>
+        }
+        <input asp-for="Product.Id" type="hidden" />
+        <div class="mb-3 row">
+            <label asp-for="Product.Title" class="p-0"></label>
+            <input type="text" asp-for="Product.Title" rows="10" class="form-control" />
+            <span asp-validation-for="Product.Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.Description" class="p-0"></label>
+            <textarea asp-for="Product.Description" class="form-control"></textarea>
+            <span asp-validation-for="Product.Description" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.ISBN" class="p-0"></label>
+            <input type="text" asp-for="Product.ISBN" class="form-control" />
+            <span asp-validation-for="Product.ISBN" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.Author" class="p-0"></label>
+            <input type="text" asp-for="Product.Author" class="form-control" />
+            <span asp-validation-for="Product.Author" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.ListPrice" class="p-0"></label>
+            <input type="number" asp-for="Product.ListPrice" class="form-control" />
+            <span asp-validation-for="Product.ListPrice" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.Price" class="p-0"></label>
+            <input type="number" asp-for="Product.Price" class="form-control" />
+            <span asp-validation-for="Product.Price" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.Price50" class="p-0"></label>
+            <input type="number" asp-for="Product.Price50" class="form-control" />
+            <span asp-validation-for="Product.Price50" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.Price100" class="p-0"></label>
+            <input type="number" asp-for="Product.Price100" class="form-control" />
+            <span asp-validation-for="Product.Price100" class="text-danger"></span>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.ImageUrl" class="p-0"></label>
+            <input type="text" asp-for="Product.ImageUrl" class="form-control" hidden />
+            <input type="file" id="img-upload" name="file" accept=".jpeg, .jpg, .png" class="form-control" />
+            <div class="text-center">
+                <img id="img-preview" src="" alt="Product Image" class="img-thumbnail mt-2" style="display:none; height:250px; width:300px;" />
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label asp-for="Product.CategoryId" class="p-0"></label>
+            <select asp-for="Product.CategoryId" class="form-select">
+                <option disabled selected value="">-- Select Category --</option>
+                @foreach (var category in Model.CategoryList)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+            <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+        </div>
+        <div class="row">
+            @if (actionType == "view")
+            {
+                <div class="col-6">
+                    <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="btn btn-secondary form-control">
+                        @cancelAction.ToUpper()
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="col-6">
+                    <button type="submit" class="btn btn-primary form-control">@actionType.ToUpper() PRODUCT</button>
+                </div>
+                <div class="col-6">
+                    <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="btn btn-secondary form-control">
+                        @cancelAction.ToUpper()
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+    <script>
+        if('@isImagePreviewRequired'=="true") {
+             console.log('Triggered preview decision');
+            const imgPreview = document.getElementById("img-preview");
+            imgPreview.style.display = 'block';
+
+            // 1. Resolve the path entirely on the server side using Razor
+            // This converts "~/images/prod.jpg" into "/images/prod.jpg" for the browser
+            console.log("'@Model.Product.ImageUrl'");
+            if('@Model.Product.ImageUrl'!=null){
+                const imageUrl = "@Url.Content("~" + Model.Product.ImageUrl?.Replace("\\", "/"))";
+                console.log("Final Image URL: ", imageUrl);
+                imgPreview.src = imageUrl;
+                console.log('Image preview set to visible with src: ' + imgPreview.src);
+            }
+        }
+
+        document.getElementById('img-upload').addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.getElementById("img-preview");
+                img.src = e.target.result;
+                img.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        });
+
+        if ('@isReadOnly'=="true") {
+            document.querySelectorAll('input, select, textarea').forEach(element => {
+                element.setAttribute('readonly', 'readonly');
+            });
+        } 
+    </script>
+}
