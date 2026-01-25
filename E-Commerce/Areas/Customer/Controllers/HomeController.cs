@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using BooksWeb.DataAccess.Repository.IRepository;
 using BooksWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,15 +9,30 @@ namespace BooksWeb.Areas.Customer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IUnitOfWork unitOfWork , ILogger<HomeController> logger)
         {
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var products = _unitOfWork._productRepo.GetAll("Category");
+            return View(products);
+        }
+
+
+        public IActionResult ViewProduct(Guid id)
+        {
+            var productDetails = _unitOfWork._productRepo.Get(p=>p.Id==id, includeProperties: "Category");
+            if( productDetails == null )
+            {
+                TempData["error"] = "Product not found!!";
+                return RedirectToAction("Index");
+            }
+            return View(productDetails);
         }
 
         public IActionResult Privacy()

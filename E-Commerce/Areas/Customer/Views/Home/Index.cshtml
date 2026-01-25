@@ -1,8 +1,39 @@
-﻿@{
+﻿@model IEnumerable<Product>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1 class="display-4">Welcome!! Amazing Deals are Onn Now!!</h1>
+<div class="card-grid">
+@foreach (var product in Model)
+{
+    <div class="card shadow-lg bg-light-subtle rounded-3 m-3 d-flex flex-column justify-content-evenly align-items-center pb-3">
+        <div class="m-3 h-50 w-75">
+            <img src="@product.ImageUrl" class="img-fluid rounded-3 h-100 w-100" alt="Product">
+        </div>
+        <div class="text-center">
+            <h5 class="card-title">@product.Title</h5>
+            <h6 class="card-subtitle mb-2 text-muted">by @product.Author</h6>
+            <p class="card-text">
+                @product.Category?.Name
+            </p>
+            <div class="text-muted text-decoration-line-through">
+                Original Price: @product.ListPrice.ToString("c")
+            </div>
+            <div class="card-footer mt-1 mb-3 rounded-3">
+                <b>
+                    Now Available at
+                </b>
+                <div class="text-danger d-flex justify-content-center">
+                    <h4>@product.Price.ToString("c")</h4>
+                    <small> &nbsp; only</small>
+                </div>
+            </div>
+            <a asp-area="Customer" asp-controller="Home" asp-action="ViewProduct" asp-route-id="@product.Id" class="card-link rounded-3 btn btn-info mt-1 mb-1">
+                Get more Details
+            </a>
+        </div>
+    </div>
+}
+</div>        
