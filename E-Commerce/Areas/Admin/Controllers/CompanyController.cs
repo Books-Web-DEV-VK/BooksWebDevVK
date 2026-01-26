@@ -24,6 +24,13 @@ namespace BooksWeb.Areas.Admin.Controllers
             return View(companiesList);
         }
 
+        [HttpGet]
+        public IActionResult GetAllInJSON()
+        {
+            List<Company> companyList = _unitOfWork._companyRepo.GetAll().ToList();
+            return Json(new { data = companyList });
+        }
+
         public IActionResult CreateCompany()
         {
             return View();
@@ -38,7 +45,7 @@ namespace BooksWeb.Areas.Admin.Controllers
             if (actiontype == "create")
             {
                 ViewBag.ActionType = "create";
-                return View("CompanyDetails", new Product());
+                return View("CompanyDetails", new Company());
             }
             if (actiontype == "view" || actiontype == "edit")
             {
