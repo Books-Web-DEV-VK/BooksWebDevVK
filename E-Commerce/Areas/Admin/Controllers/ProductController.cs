@@ -1,6 +1,8 @@
 ﻿using BooksWeb.DataAccess.Repository.IRepository;
 using BooksWeb.Models;
 using BooksWeb.Models.ViewModels;
+using BooksWeb.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +14,7 @@ using System.Data;
 namespace BooksWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

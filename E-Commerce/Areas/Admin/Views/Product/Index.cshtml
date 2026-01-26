@@ -26,28 +26,6 @@
             <th>Actions</th> 
         </tr>
     </thead>
-    @*<tbody>
-         @foreach (var product in Model.OrderBy(product=>product.Title))
-        {
-            <tr>
-                <td>@product.Title</td>
-                <td>@product.ISBN</td>
-                <td>@product.Author</td>
-                <td>@product.ListPrice</td>
-                <td>@product.Category?.Name</td>
-                <td>
-                    <a asp-area="Admin" asp-controller="Product" asp-action="Details" asp-route-actionType="edit" asp-route-id="@product.Id" class="btn btn-info mx-2 rounded-2">
-                        <i class="bi bi-pencil-square"></i>
-                        Edit Product
-                    </a>
-                    <a asp-area="Admin" asp-controller="Product" asp-action="Details" asp-route-actionType="delete" asp-route-id="@product.Id" class="btn btn-danger mx-2 rounded-2">
-                        <i class="bi bi-trash-fill"></i>
-                        Delete Product
-                    </a>
-                </td>
-            </tr>
-        } 
-    </tbody>*@
 </table>
 
 @section Scripts {

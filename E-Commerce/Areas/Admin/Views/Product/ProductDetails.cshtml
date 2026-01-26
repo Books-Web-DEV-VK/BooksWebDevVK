@@ -16,13 +16,6 @@
     };
 }
 
-@actionType
-@cancelAction
-@isReadOnly
-@Model?.Product.Id
-@isImagePreviewRequired
-@Model.Product.ImageUrl==null
-
 
 <form asp-area="Admin" asp-controller="Product" asp-action='ManageProducts' asp-route-actionType="@actionType" method="post" enctype="multipart/form-data">
     <div class="p-3 mt-4 border-black">

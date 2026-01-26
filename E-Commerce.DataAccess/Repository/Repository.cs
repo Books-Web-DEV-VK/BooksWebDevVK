@@ -50,7 +50,9 @@ namespace BooksWeb.DataAccess.Repository
                     query = query.Include(includeProp);
                 }
             }
-            return query.ToList();
+            if (query.Any())
+              return query.ToList();
+            return new List<T>();
         }
 
 

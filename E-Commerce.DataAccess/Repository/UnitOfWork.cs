@@ -14,11 +14,13 @@ namespace BooksWeb.DataAccess.Repository
         private readonly ApplicationDbContext _appDbCxt;
         public ICategoryRepository _categoryRepo { get; private set; }
         public IProductRepository _productRepo { get; private set; }
+        public ICompanyRepository _companyRepo { get; private set; }
 
         public UnitOfWork(ApplicationDbContext appDbCxt) { 
             _appDbCxt = appDbCxt;
             _categoryRepo = new CategoryRepository(_appDbCxt);
             _productRepo = new ProductRepository(_appDbCxt);
+            _companyRepo = new CompanyRepository(_appDbCxt);
         }
 
         public void Save()

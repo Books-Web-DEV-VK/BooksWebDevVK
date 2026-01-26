@@ -11,6 +11,8 @@ namespace BooksWeb.DataAccess.Repository.IRepository
     {
         ICategoryRepository _categoryRepo { get; }
         IProductRepository _productRepo { get; }
+
+        ICompanyRepository _companyRepo { get; }
         void Save();
     }
 }

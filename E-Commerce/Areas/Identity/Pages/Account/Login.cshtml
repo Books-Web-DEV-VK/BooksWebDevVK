@@ -1,0 +1,141 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+<div class="container min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="col-12 col-md-6 col-lg-4">
+
+        <div class="card border-0 shadow-lg rounded-4">
+
+            <!-- Header -->
+            <div class="card-header bg-primary text-white text-center py-4 rounded-top-4">
+                <h3 class="mb-0">Sign In</h3>
+            </div>
+
+            <!-- Body -->
+            <div class="card-body p-4">
+
+                <form id="account" method="post">
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger py-2"></div>
+
+                    <!-- Email -->
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email"
+                               class="form-control"
+                               autocomplete="username"
+                               placeholder="name@example.com"
+                               aria-required="true" />
+                        <label asp-for="Input.Email">Email address</label>
+                        <span asp-validation-for="Input.Email"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password"
+                               class="form-control"
+                               autocomplete="current-password"
+                               placeholder="Password"
+                               aria-required="true" />
+                        <label asp-for="Input.Password">Password</label>
+                        <span asp-validation-for="Input.Password"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="form-check mb-3">
+                        <input asp-for="Input.RememberMe"
+                               class="form-check-input" />
+                        <label asp-for="Input.RememberMe"
+                               class="form-check-label">
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button id="login-submit"
+                            type="submit"
+                            class="btn btn-primary w-100 py-2 fw-semibold">
+                        Log in
+                    </button>
+
+                    <!-- Links -->
+                    <div class="text-center mt-3 small">
+                        <p class="mb-1">
+                            <a id="forgot-password"
+                               asp-page="./ForgotPassword">
+                                Forgot password?
+                            </a>
+                        </p>
+                        <p class="mb-1">
+                            <a asp-page="./Register"
+                               asp-route-returnUrl="@Model.ReturnUrl">
+                                Create a new account
+                            </a>
+                        </p>
+                        <p class="mb-0">
+                            <a id="resend-confirmation"
+                               asp-page="./ResendEmailConfirmation">
+                                Resend email confirmation
+                            </a>
+                        </p>
+                    </div>
+
+                </form>
+
+                <!-- Divider -->
+                <div class="text-center my-4">
+                    <span class="text-muted">OR</span>
+                </div>
+
+                <!-- External Logins -->
+                <section class="text-center">
+
+                    <h6 class="text-muted mb-3">
+                        Continue with
+                    </h6>
+
+                    @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                    {
+                        <p class="text-muted small">
+                            No external authentication services configured.
+                        </p>
+                    }
+                    else
+                    {
+                        <form id="external-account"
+                              asp-page="./ExternalLogin"
+                              asp-route-returnUrl="@Model.ReturnUrl"
+                              method="post">
+
+                            <div class="d-grid gap-2">
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit"
+                                            class="btn btn-outline-secondary"
+                                            name="provider"
+                                            value="@provider.Name">
+                                        Continue with @provider.DisplayName
+                                    </button>
+                                }
+                            </div>
+                        </form>
+                    }
+
+                </section>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
