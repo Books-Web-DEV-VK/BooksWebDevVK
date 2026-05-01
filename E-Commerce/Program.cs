@@ -42,8 +42,8 @@ builder.Services.AddSession(builder =>
 
 builder.Services.AddAuthentication().AddFacebook(options =>
 {
-    options.AppId = "1477182320613989";
-    options.AppSecret = "afe7b612675826aa2e0015336947f5b6";
+    options.AppId = builder.Configuration.GetSection("FacebookDevelopersApp:AppId").Value; 
+    options.AppSecret = builder.Configuration.GetSection("FacebookDevelopersApp:AppSecret").Value; 
 });
 
 var app = builder.Build();
