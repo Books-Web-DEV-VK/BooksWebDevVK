@@ -4,4 +4,5 @@
   <Project Path="E-Commerce.Models/BooksWeb.Models.csproj" Id="b7811d17-f9a7-4a22-9726-563e66423b37" />
   <Project Path="E-Commerce.Utility/BooksWeb.Utilities.csproj" Id="d28d1e3b-66d9-4d56-b12c-de4357e3e983" />
   <Project Path="E-Commerce/BooksWeb.csproj" />
+  <Project Path="Fake_PaymentGateway/Fake_PaymentGateway.csproj" Id="37139294-fd47-4162-acc8-7e15b85c9327" />
 </Solution>

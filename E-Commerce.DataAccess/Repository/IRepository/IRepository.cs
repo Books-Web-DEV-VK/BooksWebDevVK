@@ -9,8 +9,8 @@ namespace BooksWeb.DataAccess.Repository.IRepository
 {
     public interface IRepository<T> where T: class // Reason for this structure : There might some bussinesss logic involved for different kinds of entities ( Models : Category , Products etc ) and we don't want the bussiness logic to be in the IRepository and also to make the code reusable for all king]ds of the entities.
     {
-        IEnumerable<T> GetAll(string? includeProperties = null);
-        T Get(Expression<Func<T,bool>> filter, string? includeProperties = null);
+        IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool track = false);
+        T Get(Expression<Func<T,bool>> filter, string? includeProperties = null, bool track = false);
         void Add(T entity);
         void Update(T entity);
         void Remove(T entity);

@@ -27,14 +27,14 @@ namespace BooksWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Product> products = _unitOfWork._productRepo.GetAll("Category").ToList();
+            List<Product> products = _unitOfWork._productRepo.GetAll(null,"Category").ToList();
             return View(products);
         }
 
         [HttpGet]
         public IActionResult GetAllInJSON()
         {
-            List<Product> products = _unitOfWork._productRepo.GetAll("Category").ToList();
+            List<Product> products = _unitOfWork._productRepo.GetAll(null,"Category").ToList();
             return Json(new { data = products });
         }
 

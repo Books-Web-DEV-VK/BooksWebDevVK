@@ -26,9 +26,9 @@ namespace BooksWeb.DataAccess.Repository
             _dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool track = false)
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = track ? _dbSet : _dbSet.AsNoTracking<T>();
             query = query.Where(filter);
             if(!string.IsNullOrEmpty(includeProperties))
             {
@@ -40,9 +40,10 @@ namespace BooksWeb.DataAccess.Repository
             return query.FirstOrDefault<T>();
         }
 
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool track = false)
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = track ? _dbSet : _dbSet.AsNoTracking<T>();
+            query = filter==null ? _dbSet : _dbSet.Where(filter);
             if(!string.IsNullOrEmpty(includeProperties))
             {
                 foreach(var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))

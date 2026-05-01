@@ -1,4 +1,6 @@
 ﻿@page
+@using BooksWeb.Utility
+@using System.Security.Claims
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -111,27 +113,38 @@
 
 
                     <!-- Role -->
-                    <div class="form-floating mb-4">
-                        <select asp-for="Input.Role"
-                                asp-items="@Model.Input.RoleList"
-                                class="form-select">
-                            <option disabled selected>-- Select Role --</option>
-                        </select>
-                        <label asp-for="Input.Role">User Role</label>
-                        <span asp-validation-for="Input.Role" class="text-danger small"></span>
-                    </div>
+                    <!-- Admin can add Admins, Employees, Company Admins -->
+                    <!-- Employees can add Employees, Company Admins -->
+                    <!-- Customers or any other user by default trying to register apart from Admin, Employees by default will be given customer roles -->
+                    <!-- Company Admins can only login, admins/ employees does registration instead of them-->
+                    @if(User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+                    {
+                        <div class="form-floating mb-4">
+                            <select asp-for="Input.Role"
+                                    asp-items="@Model.Input.RoleList"
+                                    class="form-select">
+                                <option disabled selected>-- Select Role --</option>
+                            </select>
+                            <label asp-for="Input.Role">User Role</label>
+                            <span asp-validation-for="Input.Role" class="text-danger small"></span>
+                        </div>
 
-                    <!-- Company -->
-                    <div class="form-floating mb-4">
-                        <select asp-for="Input.Company"
-                               asp-items="@Model.Input.CompanyList"
-                               class="form-control"
-                               placeholder="Company">
-                            <option disabled selected>-- Select Company --</option>
-                        </select>
-                        <label asp-for="Input.Company">Company</label>
-                        <span asp-validation-for="Input.Company" class="text-danger small"></span>
-                    </div>
+                        <!-- Company -->
+                        <div class="form-floating mb-4" id="company-field">
+                            <select asp-for="Input.CompanyId"
+                                    asp-items="@Model.Input.CompanyList"
+                                    class="form-select"
+                                    placeholder="Company">
+                                <option disabled selected>-- Select Company --</option>
+                            </select>
+                            <label asp-for="Input.CompanyId">Company</label>
+                            <span asp-validation-for="Input.CompanyId" class="text-danger small"></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <input asp-for="Input.Role" value="@SD.Role_Customer" type="hidden" /> 
+                    }
 
                     <!-- Register Button -->
                     <button id="registerSubmit"
@@ -141,45 +154,48 @@
                     </button>
                 </form>
 
-                <!-- Divider -->
-                <div class="text-center my-4">
-                    <span class="text-muted">OR</span>
-                </div>
+                 <!-- Admin, Employees, Companies are not allowed to login by social media accounts -->
+                <!-- Only customers are given that option -->
+                @if (!User.Claims.Any(c => c.Type == ClaimTypes.Role))
+                {
+                    <!-- Divider -->
+                    <div class="text-center my-4">
+                        <span class="text-muted">OR</span>
+                    </div>
 
-                <!-- External Logins -->
-                <section class="text-center">
+                    <!-- External Logins -->
+                    <section class="text-center">
 
-                    <h6 class="text-muted mb-3">Sign up using</h6>
+                        <h6 class="text-muted mb-3">Sign up using</h6>
 
-                    @if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                    {
-                        <p class="text-muted small">
-                            No external authentication services configured.
-                        </p>
-                    }
-                    else
-                    {
-                        <form id="external-account"
-                              asp-page="./ExternalLogin"
-                              asp-route-returnUrl="@Model.ReturnUrl"
-                              method="post">
+                        @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                        {
+                            <p class="text-muted small">
+                                No external authentication services configured.
+                            </p>
+                        }
+                        else
+                        {
+                            <form id="external-account"
+                                  asp-page="./ExternalLogin"
+                                  asp-route-returnUrl="@Model.ReturnUrl"
+                                  method="post">
 
-                            <div class="d-grid gap-2">
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit"
-                                            class="btn btn-outline-secondary"
-                                            name="provider"
-                                            value="@provider.Name">
-                                        Continue with @provider.DisplayName
-                                    </button>
-                                }
-                            </div>
-                        </form>
-                    }
-
-                </section>
-
+                                <div class="d-grid gap-2">
+                                    @foreach (var provider in Model.ExternalLogins!)
+                                    {
+                                        <button type="submit"
+                                                class="btn btn-outline-secondary"
+                                                name="provider"
+                                                value="@provider.Name">
+                                            Continue with @provider.DisplayName
+                                        </button>
+                                    }
+                                </div>
+                            </form>
+                        }
+                    </section>
+                }
             </div>
         </div>
     </div>
@@ -189,11 +205,18 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         var roleSelect = document.getElementById("Input_Role");
-        var companySelect = document.getElementById("Input_Company");
-
+        var companySelect = document.getElementById("Input_CompanyId");
+        var companyFieldDiv = document.getElementById("company-field");
+        companySelect.disabled = true;
+        companySelect.hidden = true;
+        companyFieldDiv.hidden = true;
         roleSelect.addEventListener("change", function(){
-            companySelect.disabled = (roleSelect.value !== "Company");
+            var selectedRoleIndex = roleSelect.selectedIndex;
+            var selectedRoleOption = roleSelect.options[selectedRoleIndex];
+            console.log("Selected Role Option :", selectedRoleIndex, selectedRoleOption.text, selectedRoleOption.value);
+            companySelect.disabled = (selectedRoleOption.text !== "Company");
             companySelect.hidden = companySelect.disabled;
+            companyFieldDiv.hidden = companySelect.disabled;
             console.log("Company select disabled: " + companySelect.disabled);
         });
     </script>

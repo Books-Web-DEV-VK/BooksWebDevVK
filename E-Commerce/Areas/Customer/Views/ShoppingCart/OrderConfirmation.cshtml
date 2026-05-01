@@ -1,0 +1,83 @@
+﻿@using BooksWeb.Utility
+@model OrderConfirmationModel
+
+@{
+    string headerClass = (Model.OrderStatus==SD.StatusApproved && (Model.PaymentStatus==SD.PaymentStatusApproved || Model.PaymentStatus==SD.PaymentStatusDelayedPayment)) || (Model.OrderStatus==SD.StatusShipped && Model.PaymentStatus==SD.PaymentStatusApproved)
+                  ? "bg-success" : "bg-danger";
+    string orderStatus = Model.OrderStatus switch
+    {
+        SD.StatusApproved => "Your order has been approved.",
+        SD.StatusShipped => "Your order has been shipped. It will be delivered soon.",
+        SD.StatusPending => "Your order has not been approved yet. Please try after some time.",
+        _ => "There was an issue with your order. Please contact admin"
+    };
+    string paymentStatus = Model.PaymentStatus switch
+    {
+        SD.PaymentStatusApproved => "Your payment has been approved.",
+        SD.PaymentStatusDelayedPayment => "Your payment is delayed. Please wait for confirmation.",
+        _ => "There was an issue with your payment. Please contact admin"
+    };
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+
+                <div class="card-header text-white text-center @headerClass rounded-top-3">
+                    <h4 class="mb-0">Order Confirmation</h4>
+                </div>
+
+                <div class="card-body rounded-bottom-3">
+                    <div class="row">
+                        <div class="col-6 fw-bold">
+                            Order ID
+                        </div>
+                        <div class="col-6">
+                            @Model.OrderId
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 fw-bold">
+                            Order Status
+                        </div>
+                        <div class="col-6">
+                            @orderStatus
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 fw-bold">
+                             Payment Status
+                        </div>
+                        <div class="col-6">
+                            @paymentStatus
+                        </div>
+                    </div>
+
+                    @if (Model.PaymentStatus == SD.PaymentStatusApproved)
+                    {
+                        <div class="row">
+                            <div class="col-6 fw-bold">
+                                Payment ID
+                            </div>
+                            <div class="col-6">
+                                @Model.PaymentId
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <a asp-controller="Home" asp-action="Index" class="col-6 btn btn-primary mt-3 rounded-3">Continue Shopping</a>
+                        </div>
+                    }
+                    @if (Model.PaymentStatus != SD.PaymentStatusApproved && Model.PaymentStatus!=SD.PaymentStatusDelayedPayment)
+                    {
+                        <div class="row justify-content-center">
+                            <a asp-controller="ShoppingCart" asp-action="Summary" class="col-6 btn btn-warning mt-3 rounded-3"> Check Items and Order Again </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

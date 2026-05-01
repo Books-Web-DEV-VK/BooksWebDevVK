@@ -1,0 +1,89 @@
+﻿@using BooksWeb.Utility
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var statusFilter = HttpContextAccessor.HttpContext?.Request.Query["orderStatus"].ToString();
+    var (pendingActiveClass, approvedActiveClass, inProcessActiveClass, shippedActiveClass, deliveredActiveClass, cancelledActiveClass, allActiveClass) = statusFilter switch
+    {
+        SD.StatusPending => ("active", "", "", "", "", "", ""),
+        SD.StatusApproved => ("", "active", "", "", "", "", ""),
+        SD.StatusInProgress => ("", "", "active", "", "", "", ""),
+        SD.StatusShipped => ("", "", "", "active", "", "", ""),
+        SD.StatusDelivered => ("", "", "", "", "active", "", ""), 
+        SD.StatusCancelled => ("", "", "", "", "", "active", ""),
+        _ => ("", "", "", "", "", "", "active")  // Default maps to "all"
+    };
+    var (pendingTextClass, approvedTextClass, inProcessTextClass, shippedTextClass, deliveredTextClass, cancelledTextClass, allTextClass) = statusFilter switch
+    {
+        SD.StatusPending => ("text-white", "", "", "", "", "", ""),
+        SD.StatusApproved => ("", "text-white", "", "", "", "", ""),
+        SD.StatusInProgress => ("", "", "text-white", "", "", "", ""),
+        SD.StatusShipped => ("", "", "", "text-white", "", "", ""),
+        SD.StatusDelivered => ("", "", "", "", "text-white", "", ""), 
+        SD.StatusCancelled => ("", "", "", "", "", "text-white", ""),
+        _ => ("", "", "", "", "", "", "text-white")  // Default to 'all'
+    };
+
+}
+
+<div class="card shadow-lg m-auto">
+    <div class="card-header text-white bg-primary p-3 rounded-top-3 fw-bold fs-2">
+        Order Status : 
+    </div>
+    <div class="card-body rounded-bottom-3 p-3">
+        <div class="d-flex align-items-center m-3">
+            <span class="fw-bold">Status : &nbsp; &nbsp; </span>
+            <ul class="list-group list-group-horizontal-sm">
+                <li class="list-group-item @pendingActiveClass">
+                    <a class="text-decoration-none @pendingTextClass" asp-controller="Order" asp-action="Index" asp-route-orderStatus="@SD.StatusPending">
+                        Order Confirmation Pending
+                    </a>
+                </li>
+                <li class="list-group-item @approvedActiveClass">
+                    <a class="text-decoration-none @approvedTextClass" asp-controller="Order" asp-action="Index" asp-route-orderStatus="@SD.StatusApproved">
+                        Order Approved
+                    </a>
+                </li>
+                <li class="list-group-item @inProcessActiveClass">
+                    <a class="text-decoration-none @inProcessTextClass" asp-controller="Order" asp-action="Index" asp-route-orderStatus="@SD.StatusInProgress">
+                        Order Inprocess
+                    </a>
+                </li>
+                <li class="list-group-item @shippedActiveClass">
+                    <a class="text-decoration-none @shippedTextClass" asp-controller="Order" asp-action="Index" asp-route-orderStatus="@SD.StatusShipped">
+                        Order Shipped
+                    </a>
+                </li>
+                <li class="list-group-item @deliveredActiveClass">
+                    <a class="text-decoration-none @deliveredTextClass" asp-controller="Order" asp-action="Index" asp-route-orderStatus="@SD.StatusDelivered">
+                        Order Delivered
+                    </a>
+                </li>
+                <li class="list-group-item @cancelledActiveClass">
+                    <a class="text-decoration-none @cancelledTextClass" asp-controller="Order" asp-action="Index" asp-route-orderStatus="@SD.StatusCancelled">
+                        Order Cancelled
+                    </a>
+                </li>
+                <li class="list-group-item @allActiveClass">
+                    <a class="text-decoration-none @allTextClass" asp-controller="Order" asp-action="Index" asp-route-orderStatus="all">
+                        All
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="overflow-auto w-100">
+            <table id="order-table" class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Phone Number</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Order Summary Details</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>

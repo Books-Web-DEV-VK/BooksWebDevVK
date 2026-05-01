@@ -31,11 +31,6 @@ namespace BooksWeb.Areas.Admin.Controllers
             return Json(new { data = companyList });
         }
 
-        public IActionResult CreateCompany()
-        {
-            return View();
-        }
-
         [HttpGet]
         [Route("Admin/Company/{action}/{actiontype}/{id?}")]  // Here action is like keyword for MVC to identify the method to be called
         public IActionResult Details(string actiontype, Guid? id)

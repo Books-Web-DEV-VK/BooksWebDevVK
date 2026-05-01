@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using EmailServiceUtility = BooksWeb.Utility.EmailSender;
 
 namespace BooksWeb.Areas.Identity.Pages.Account
 {
@@ -35,7 +36,7 @@ namespace BooksWeb.Areas.Identity.Pages.Account
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly EmailServiceUtility.IEmailSender _emailSender;
         private readonly IUnitOfWork _unitOfWork;
 
         public RegisterModel(
@@ -44,7 +45,7 @@ namespace BooksWeb.Areas.Identity.Pages.Account
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
+            EmailServiceUtility.IEmailSender emailSender,
             IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
@@ -122,7 +123,7 @@ namespace BooksWeb.Areas.Identity.Pages.Account
             public string? State { get; set; }
             public string? PostalCode { get; set; }
 
-            public string? Company { get; set; }
+            public Guid? CompanyId { get; set; }
 
             [ValidateNever]
             public IEnumerable<SelectListItem> CompanyList { get; set; }
@@ -140,14 +141,41 @@ namespace BooksWeb.Areas.Identity.Pages.Account
             }
 
             Input = new InputModel();
-            Input.RoleList = _roleManager.Roles
-                .Where(r => r.Name != null)
+
+            // Only Admin Can addd All roles
+            // Employee can add Employee, Companies and Customer
+            // Company Admin can only be registered by Admin and Employee
+            // Customer can only register himself as Customer
+            var roleList = _roleManager.Roles
+                .Where(r => r.Name != null);
+
+            if (User.IsInRole(SD.Role_Admin))
+            {
+                Input.RoleList = roleList
                 .Select(r => new SelectListItem
                 {
-                    Value = r.Name!,
-                    Text = r.Name!
-                })
-                .ToList();
+                    Value = r.Name,
+                    Text = r.Name
+                }).ToList();
+            }
+            else if (User.IsInRole(SD.Role_Employee))
+            {
+                Input.RoleList = roleList
+                .Where(r => r.Name != SD.Role_Admin)
+                .Select(r => new SelectListItem
+                {
+                    Value = r.Name,
+                    Text = r.Name
+                }).ToList();
+            }
+            else
+            {
+                Input.RoleList = new SelectListItem[]
+                {
+                    new SelectListItem { Value = SD.Role_Customer, Text = SD.Role_Customer }
+                };
+            }
+
             var companies = _unitOfWork._companyRepo.GetAll();
             Input.CompanyList = companies.Select(c => new SelectListItem
             {
@@ -170,6 +198,7 @@ namespace BooksWeb.Areas.Identity.Pages.Account
                 user.City = Input.City;
                 user.State = Input.State;
                 user.PostalCode = Input.PostalCode;
+                user.CompanyId = Input.CompanyId;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -203,7 +232,14 @@ namespace BooksWeb.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        if(User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+                        {
+                            TempData["success"] = "New User Created Successfully";
+                        }
+                        else
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                        }
                         return LocalRedirect(returnUrl);
                     }
                 }

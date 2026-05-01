@@ -1,0 +1,33 @@
+﻿@model PaymentRequestModel
+
+<h1 class="text-info text-center"> Fake Payment Gateway Simulator </h1>
+<div class="text-center">
+    <div class="fs-5"> India's first payment simulator </div>
+    <div class="fs-5"> Note: This is only test money </div>
+    <div class="fs-5"> Note: Your real money is safe </div>
+</div>
+<form asp-action="ProcessPayment" class="card shadow-lg border-0 col-6 m-auto mt-5">
+    <div class="card-header bg-primary text-white text-center fs-1 rounded-top-3">
+        Payment Request
+    </div>
+    <div class="card-body rounded-bottom-3 text-center">
+        <input type="hidden" asp-for="@Model.amount" />
+        <input type="hidden" asp-for="@Model.orderId" />
+        <input type="hidden" asp-for="@Model.callBackUrl" />
+        <input type="hidden" asp-for="@Model.signature" />
+        <input type="text" name="cardHolder" class="form-control" placeholder="Enter Card Holder Name" />
+        <br />
+        <input type="text" name="cardNumber" maxlength="16" class="form-control" placeholder="Enter your credit card number" />
+        <br />
+        <input type="text" name="cardExpiry" maxlength="5" class="form-control" placeholder="Enter your card Expiry ( Format ) : mm/yy" />
+        <br />
+        <input type="text" name="cardCvv" maxlength="4" class="form-control" placeholder="Enter your card CVV" />
+        <br />
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-outline-primary btn-lg px-5">
+                Pay @Model.amount.ToString("c")
+            </button>
+        </div>
+        <a href="@Model.callBackUrl"> Cancel Payment </a>
+    </div>
+</form>

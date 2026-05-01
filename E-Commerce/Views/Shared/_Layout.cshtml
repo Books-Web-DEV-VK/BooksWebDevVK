@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,30 +28,48 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @if(User.IsInRole(SD.Role_Admin)){
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">Manage Orders</a>
+                        </li>
+                        @if(User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee)){
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Content Management
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
-                                    </li>
+                                    @if(User.IsInRole(SD.Role_Admin))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
+                                        </li>
+                                    }
+                                    @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Create an user with role</a>
+                                        </li>
+                                    }
                                 </ul>
                             </li>
                         }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index">
+                                @await Component.InvokeAsync("ShoppingCartCount")
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <partial name="_LoginPartial" />
@@ -79,6 +100,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/productTable.js"></script>
     <script src="~/js/companyTable.js"></script>
+    <script src="~/js/orderTable.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

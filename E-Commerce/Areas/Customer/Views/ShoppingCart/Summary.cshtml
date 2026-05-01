@@ -1,0 +1,96 @@
+﻿@model ShoppingCartVM
+
+<div class="alert alert-success mt-4">
+    <h6>
+        Estimated Delivery Date:
+        @DateTime.Now.AddDays(7).ToString("dd-MM-yy") -
+        @DateTime.Now.AddDays(10).ToString("dd-MM-yy")
+    </h6>
+</div>
+<form method="post" asp-action="PlaceOrder">
+    <div class="row">
+        <!-- LEFT SECTION -->
+        <div class="col-md-6">
+            <h4 class="mb-3 text-primary">Shopping Details</h4>
+
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input asp-for="OrderHeader.Name" class="form-control" />
+                <span class="text-danger" asp-validation-for="OrderHeader.Name"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input asp-for="OrderHeader.PhoneNumber" class="form-control" />
+                <span class="text-danger" asp-validation-for="OrderHeader.PhoneNumber"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Street Address</label>
+                <input asp-for="OrderHeader.StreetAddress" class="form-control" />
+                <span class="text-danger" asp-validation-for="OrderHeader.StreetAddress"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">City</label>
+                <input asp-for="OrderHeader.City" class="form-control" />
+                <span class="text-danger" asp-validation-for="OrderHeader.City"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">State</label>
+                <input asp-for="OrderHeader.State" class="form-control" />
+                <span class="text-danger" asp-validation-for="OrderHeader.State"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Postal Code</label>
+                <input asp-for="OrderHeader.PostalCode" class="form-control" />
+                <span class="text-danger" asp-validation-for="OrderHeader.PostalCode"></span>
+            </div>
+        </div>
+
+        <!-- RIGHT SECTION -->
+        <div class="col-md-6">
+            <h4 class="mb-3 text-success">Order Summary</h4>
+
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ItemsList)
+                    {
+                        <tr>
+                            <td>
+                                @item.Product.Title
+                                <br />
+                                <small class="text-muted">Quantity: @item.Count</small>
+                            </td>
+                            <td>
+                                @((item.Count * item.Price).ToString("c"))
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between align-items-center mt-3 p-2 border rounded bg-light">
+                <strong>Total</strong>
+                <span class="fw-bold text-primary">@Model.OrderHeader.OrderTotal</span>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-outline-primary m-3 rounded-3" type="submit">
+                    Place Order
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

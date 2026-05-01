@@ -19,6 +19,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\E-Commerce.Models\BooksWeb.Models.csproj" />
+    <ProjectReference Include="..\E-Commerce.Utility\BooksWeb.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Vinay Krishna\source\repos\E-Commerce\E-Commerce.DataAccess\Repository\IRepository\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\Vinay Krishna\source\repos\E-Commerce\E-Commerce.DataAccess\Repository\IRepository\.editorconfig" />
   </ItemGroup>
 
 </Project>
