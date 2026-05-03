@@ -39,6 +39,9 @@ builder.Services.AddSession(builder =>
     builder.Cookie.HttpOnly = true;
     builder.Cookie.IsEssential = true;
 });
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
 builder.Services.AddAuthentication().AddFacebook(options =>
 {
