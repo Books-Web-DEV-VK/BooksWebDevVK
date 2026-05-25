@@ -1,0 +1,63 @@
+﻿@model ApplicationUserRoleVM;
+@{
+    List<SelectListItem> roles = Model.roles.Select(r => new SelectListItem { Text = r.Name, Value = r.Name }).ToList();
+    List<SelectListItem> companies = Model.companies.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() }).ToList();
+}
+
+<div class="container">
+    <div class="row pt-4 pb-3">
+        <div class="col-6">
+            <h2 class="text-primary">
+                Manage User Roles
+            </h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="User" asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Back to User List
+            </a>
+        </div> 
+    </div>
+    <form id="manage-user-role" method="post">
+        <input type="hidden" asp-for="applicationUser.Id" />
+        <div class="mb-3">
+            <label asp-for="applicationUser.UserName" class="form-label"></label>
+            <input asp-for="applicationUser.UserName" class="form-control" readonly />
+        </div>
+        <div class="mb-3">
+            <label asp-for="applicationUser.Email" class="form-label"></label>
+            <input asp-for="applicationUser.Email" class="form-control" readonly />
+        </div>
+        <div class="mb-3">
+            <label for="roles" class="form-label">Select Roles</label>
+            <select asp-for="applicationUser.Role" asp-items="roles" class="form-select">
+                <option disabled selected>-- Select Roles --</option>
+            </select>
+        </div>
+        <div id="companies-section" class="mb-3" hidden>
+            <label for="companies" class="form-label">Select Company</label>
+            <select asp-for="applicationUser.CompanyId" asp-items="companies" class="form-select">
+                <option disabled selected>-- Select Company --</option>
+            </select>
+        </div>
+        <button asp-controller="User" asp-action="UpdateUserRole" type="submit" class="btn btn-primary">Update User Role</button>
+    </form>
+</div>
+
+    @section Scripts
+    {
+        <script>                  
+            var roleSelect = document.getElementById("applicationUser_Role");
+            var companySelect = document.getElementById("applicationUser_CompanyId");
+            var companiesSection = document.getElementById("companies-section");
+            var userRoleForm = document.getElementById("manage-user-role");
+            companySelect.disabled = true; // Disable company select by default
+            companiesSection.hidden = true; // Hide company section by default
+
+            roleSelect.addEventListener('change', function(){
+                var selectedOption = roleSelect.options[roleSelect.selectedIndex];
+                companySelect.disabled = selectedOption.text !== "Company";
+                companiesSection.hidden = companySelect.disabled;
+            });
+        </script>
+    }

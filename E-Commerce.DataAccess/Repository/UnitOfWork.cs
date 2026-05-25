@@ -1,5 +1,6 @@
 ﻿using BooksWeb.DataAccess.Repository.IRepository;
 using BooksWeb.Migrations.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace BooksWeb.DataAccess.Repository
         public IApplicationUserRepository _applicationUserRepo { get; private set; }
         public IOrderHeaderRepository _orderHeaderRepo { get; private set; }
         public IOrderDetailsRepository _orderDetailsRepo { get; private set; }
+        public IApplicationUserRepository _applicationUserRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext appDbCxt) { 
             _appDbCxt = appDbCxt;
@@ -29,6 +31,7 @@ namespace BooksWeb.DataAccess.Repository
             _applicationUserRepo = new ApplicationUserRepository(_appDbCxt);
             _orderHeaderRepo = new OrderHeaderRepository(_appDbCxt);
             _orderDetailsRepo = new OrderDetailsRepository(_appDbCxt);
+            _applicationUserRepository = new ApplicationUserRepository(_appDbCxt);
         }
 
         public void Save()

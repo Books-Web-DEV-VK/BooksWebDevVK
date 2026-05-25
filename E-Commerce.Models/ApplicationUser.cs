@@ -24,5 +24,10 @@ namespace BooksWeb.Models
         [ValidateNever]
         [ForeignKey(nameof(CompanyId))]
         public Company Company { get; set; } = null!;
+
+        [NotMapped] 
+        public string Role { get; set; }
+        [NotMapped]
+        public string CompanyName { get; set; }
     }
 }
